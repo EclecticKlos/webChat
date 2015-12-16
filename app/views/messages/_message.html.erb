@@ -1,0 +1,17 @@
+<% if @messages %>
+  <% @messages.each do |message| %>
+  <% user_name =  %>
+    <li class="message-instance">
+      <div>
+        <h4><%= message.user.username %> says
+          <small class="text-muted message-date">at <%= message.created_at.strftime('%-d %B %Y, %H:%M:%S') %></small></h4>
+        <p><%= message.body %></p>
+      </div>
+    </li>
+  <% end %>
+  <%= render :partial => 'messages/form' %>
+<% else %>
+  <h3>Select one of your conversations</h3>
+<% end %>
+
+
