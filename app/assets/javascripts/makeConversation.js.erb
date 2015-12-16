@@ -1,4 +1,6 @@
 $( document ).ready(function() {
+console.log("THIS RAN")
+console.log("*" * 100)
   <%
   require 'json'
 
@@ -8,7 +10,7 @@ $( document ).ready(function() {
   end
 
   def makeUsers
-    makeDataHash('/Users/dan/Desktop/projects/chat_app/patreonic_chat/data.json')
+    makeDataHash('/Users/dan/Desktop/projects/chat_app/patreonic_chat/app/assets/data.json')
     @data_hash["includes"].each do |item|
       if item["name"]
         User.create(username: item["name"], id: item["id"])
@@ -47,3 +49,4 @@ $( document ).ready(function() {
   buildMessages
   %>
 });
+
