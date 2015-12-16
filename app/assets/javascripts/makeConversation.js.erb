@@ -1,0 +1,49 @@
+$( document ).ready(function() {
+  <%
+  require 'json'
+
+  def makeDataHash(fileLocation)
+    file = File.read(fileLocation)
+    @data_hash = JSON.parse(file)
+  end
+
+  def makeUsers
+    makeDataHash('/Users/dan/Desktop/projects/chat_app/patreonic_chat/data.json')
+    @data_hash["includes"].each do |item|
+      if item["name"]
+        User.create(username: item["name"], id: item["id"])
+      end
+    end
+  end
+
+  def defineSenderAndRecipient
+    makeUsers
+    @sender = @data_hash["data"][0]["user"]["id"]
+    @recipient = nil
+    @data_hash["data"].each do |item|
+      if item["user"]["id"] != @sender
+        @recipient = item["user"]["id"]
+      end
+    end
+  end
+
+  def createConversation
+    defineSenderAndRecipient
+    @conversation = Conversation.create(sender_id: @sender, recipient_id: @recipient)
+    @conversation.save
+  end
+
+  def buildMessages
+    createConversation
+    @data_hash["data"].each do |dataElement|
+      @data_hash["includes"].each do |includesElement|
+        if dataElement["message"]["id"] == includesElement["id"] && includesElement["type"] == "message"
+          message = Message.create(body: includesElement["text"], conversation_id: @conversation.id, user_id: dataElement["user"]["id"])
+        end
+      end
+    end
+  end
+
+  buildMessages
+  %>
+});
